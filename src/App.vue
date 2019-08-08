@@ -128,16 +128,12 @@ export default {
   },
   methods: {
         // sets the showDetail variable to a given task's id
-        toggleShowDetail(taskId) {
-          if (taskId) {
+        toggleShowDetail(taskId = 0) {
             (this.showDetail == taskId) ? this.showDetail = 0 : this.showDetail = taskId;
-          } else {
-            this.showDetail = 0;
-          }
         },
         // return overdue state of a given task
-        getOverdue(taskId) {
-          if (taskId) {
+        getOverdue(taskId = 0) {
+          if (taskId != 0) {
             // find this task in the array
             let taskToEvaluate = this.tasks.filter( taskToEvaluate => {
               return taskToEvaluate._id == taskId; })[0];
@@ -148,8 +144,8 @@ export default {
           }
         },
         // return due today state of a given task
-        getDueToday(taskId) {
-          if (taskId) {
+        getDueToday(taskId = 0) {
+          if (taskId != 0) {
             // find this task in the array
             let taskToEvaluate = this.tasks.filter( taskToEvaluate => {
               return taskToEvaluate._id == taskId; })[0];
@@ -160,8 +156,8 @@ export default {
           }
         },
         // return due tomorrow state of a given task
-        getDueTomorrow(taskId) {
-          if (taskId) {
+        getDueTomorrow(taskId = 0) {
+          if (taskId != 0) {
             // find this task in the array
             let taskToEvaluate = this.tasks.filter( taskToEvaluate => {
               return taskToEvaluate._id == taskId; })[0];
@@ -173,19 +169,13 @@ export default {
           }
         },
         // friendly format for display of this task's date
-        displayDate(taskId) {
-          if (taskId) {
+        displayDate(taskId = 0) {
+          if (taskId != 0) {
             // find this task in the array
             let taskToEvaluate = this.tasks.filter( taskToEvaluate => {
               return taskToEvaluate._id == taskId; })[0];
-            let tempDateDisplay = '';
-            if (moment(taskToEvaluate.due, "YYYY-MM-DD").isSame(moment(), 'day')) {
-              tempDateDisplay = "Today";
-            } else {
-              tempDateDisplay = moment(taskToEvaluate.due, "YYYY-MM-DD").format("dddd MMMM DD");
-            }
-            // use moment.js to manipulate display
-            return tempDateDisplay
+            return (moment(taskToEvaluate.due, "YYYY-MM-DD").isSame(moment(), 'day')) ? 
+              "Today" : moment(taskToEvaluate.due, "YYYY-MM-DD").format("dddd MMMM DD");
           } else {
             console.log("displayDate() error: invalid task id");
             return "Date format error";
@@ -207,12 +197,27 @@ export default {
                   due: this.newTaskDue
                   })
               .then( response => {
-                console.log(`addTask(): RESPONSE:\n` + JSON.stringify(response.data));
+                console.log(`addTask(): RESPONSE:\n ${JSON.stringify(response.data)}`);
                 this.tasks = response.data
               })
               .catch(function (error) {
-                console.log(error);
-              })
+                if (error.response) {
+                  // The request was made and the server responded with a status code
+                  // that falls out of the range of 2xx
+                  console.log(error.response.data);
+                  console.log(error.response.status);
+                  console.log(error.response.headers);
+                } else if (error.request) {
+                  // The request was made but no response was received
+                  // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                  // http.ClientRequest in node.js
+                  console.log(error.request);
+                } else {
+                  // Something happened in setting up the request that triggered an Error
+                  console.log('Error', error.message);
+                }
+                console.log(error.config);
+              });
 
             // clear form fields
             this.newTaskName = '';
@@ -226,8 +231,8 @@ export default {
           }
         },
         // toggles the "done" state of a given task, via the Task API
-        toggleDone(taskId) {
-          if (taskId) {
+        toggleDone(taskId = 0) {
+          if (taskId != 0) {
             // find the task in the array
             let taskToUpdate = this.tasks.filter( taskToUpdate => {
               return taskToUpdate._id == taskId; })[0];
@@ -244,26 +249,56 @@ export default {
                 taskToUpdate,
                 config)
               .then( response => {
-                console.log(`toggleDone(): NEW COMPLETE SET OF TASKS:\n` + JSON.stringify(response.data));
+                console.log(`toggleDone(): NEW COMPLETE SET OF TASKS:\n ${JSON.stringify(response.data)}`);
                 this.tasks = response.data
               })
               .catch(function (error) {
-                console.log(error);
-              })
+                if (error.response) {
+                  // The request was made and the server responded with a status code
+                  // that falls out of the range of 2xx
+                  console.log(error.response.data);
+                  console.log(error.response.status);
+                  console.log(error.response.headers);
+                } else if (error.request) {
+                  // The request was made but no response was received
+                  // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                  // http.ClientRequest in node.js
+                  console.log(error.request);
+                } else {
+                  // Something happened in setting up the request that triggered an Error
+                  console.log('Error', error.message);
+                }
+                console.log(error.config);
+              });
           } else {
             console.log("toggleDone() error: invalid task id");
           }
         },
         deleteTask(taskId) {
-          if (taskId) {
+          if (taskId != 0) {
             axios.delete( taskBaseURI + '/delete/' + taskId)
                 .then( response => {
-                console.log(`deleteTask(): NEW COMPLETE SET OF TASKS:\n` + JSON.stringify(response.data));
+                console.log(`deleteTask(): NEW COMPLETE SET OF TASKS:\n ${JSON.stringify(response.data)}`);
                 this.tasks = response.data
               })
               .catch(function (error) {
-                console.log(error);
-              })        
+                if (error.response) {
+                  // The request was made and the server responded with a status code
+                  // that falls out of the range of 2xx
+                  console.log(error.response.data);
+                  console.log(error.response.status);
+                  console.log(error.response.headers);
+                } else if (error.request) {
+                  // The request was made but no response was received
+                  // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                  // http.ClientRequest in node.js
+                  console.log(error.request);
+                } else {
+                  // Something happened in setting up the request that triggered an Error
+                  console.log('Error', error.message);
+                }
+                console.log(error.config);
+              });
           } else {
             console.log("deleteTask() error: invalid task id");
           }
@@ -276,10 +311,25 @@ export default {
               console.log(JSON.stringify(response.data))
               this.tasks = response.data}
           )
-          .catch(function (error) {
-            console.log("mounted: error communicating with Task API");
-            console.log(error);
-          });
+            .catch(function (error) {
+              console.log("mounted: error communicating with Task API");
+              if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+              } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                // http.ClientRequest in node.js
+                console.log(error.request);
+              } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+              }
+              console.log(error.config);
+            });
   },
 }
 // import HelloWorld from './components/HelloWorld.vue'
