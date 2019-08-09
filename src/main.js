@@ -1,18 +1,14 @@
 import '@babel/polyfill'
 import 'mutationobserver-shim'
 import Vue from 'vue'
-import './plugins/axios'
 import './plugins/bootstrap-vue'
 import App from './App.vue'
 
-Vue.config.productionTip = false
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+Vue.use(VueAxios, axios)
 
-Vue.component('detail-display', {
-	props: ['task',],
-	template: `<ul>
-          <li>Description: {{ task.description }}</li>
-        </ul>`,
-})
+Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
