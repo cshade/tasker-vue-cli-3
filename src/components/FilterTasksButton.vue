@@ -7,7 +7,7 @@
 
 <script>
 export default {
-	name: 'FilterTasksButton',
+	name: 'FilterTasksButton'
 }
 </script>
 
