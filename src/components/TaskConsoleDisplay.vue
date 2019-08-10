@@ -76,21 +76,32 @@
       </li>
     </ul>
 
+<hr>
   <h2>Create a New Task</h2>
+  <div class="input-group input-group-sm">
     <ul>
-      <li class="error" v-show="createFormError">{{ createFormErrorMsg }}
-      <li>Task: <input id="new-task-name" type="text" v-model.trim="newTaskName" placeholder="wash car"></li>
-      <li>More Info: <input id="new-task-descr" type="text" v-model.trim="newTaskDescr"></li>
-      <li>Due: <input id="new-task-due" type=date v-model.trim="newTaskDue"></li>
-
-      <create-task-button
+      <li class="error" v-show="createFormError">{{ createFormErrorMsg }}</li>
+<div class="row">
+  <div class="col">
+      <li>Task: <input id="new-task-name" type="text" class="form-control" v-model.trim="newTaskName"></li>
+  </div>
+  <div class="col">
+      <li>Due: <input id="new-task-due" class="form-control" type=date v-model.trim="newTaskDue"></li>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+      <li>More info: <input id="new-task-descr" class="form-control" type="text" v-model.trim="newTaskDescr"></li>
+  </div>
+</div>
+      
+      <li><create-task-button
         v-on:custom="createTask"
-        class="btn btn-primary col-sm-2"
+        class="btn btn-primary col-sm-6"
       >Create
-      </create-task-button>
-
+      </create-task-button></li>
     </ul>
-
+  </div>
 </div>
 </template>
 
@@ -102,6 +113,9 @@ import ToggleShowDetailButton from './ToggleShowDetailButton'
 import TaskDetailsDisplay from './TaskDetailsDisplay'
 import FilterTasksButton from './FilterTasksButton'
 import CreateTaskButton from './CreateTaskButton'
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 // URI of the Task API
 axios.defaults.baseURL = 'http://localhost:8082/api/task';
@@ -262,49 +276,57 @@ export default {
         },        
       // create a new task in the system, via the Task API
       createTask() {
+        // clear any pre-existing error condition
+        this.createFormError = false; 
+        this.createFormErrorMsg = '';
+
         // confirm that we have data for a new task
-        if (this.newTaskName &&
-            this.newTaskDescr && 
-            this.newTaskDue) {
+        if (!this.newTaskName ||
+            !this.newTaskDescr ||
+            !this.newTaskDue) {
+              this.createFormError = true;
+              this.createFormErrorMsg = 'To create a task, please complete the form.';
 
-          // clean date format
-          this.newTaskDue = moment(this.newTaskDue).format('YYYY-MM-DD');
+        // validate date
+        } else if (moment(this.newTaskDue).isBefore(moment(), 'day')) {          
+            this.createFormError = true;
+            this.createFormErrorMsg = 'To create this task, please choose either today or a future date.';
 
-          axios.post('/add' , {
-                name: this.newTaskName,
-                description: this.newTaskDescr,
-                due: this.newTaskDue
-                })
-            .then( response =>  this.myTasks = response.data )
-            .catch(function (error) {
-              if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-              } else if (error.request) {
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                // http.ClientRequest in node.js
-                console.log(error.request);
-              } else {
-                // Something happened in setting up the request that triggered an Error
-                console.log('Error', error.message);
-              }
-              console.log(error.config);
-            });
+        } else if (!this.createFormError) { // just in case
+            // clean date format
+            this.newTaskDue = moment(this.newTaskDue).format('YYYY-MM-DD');
 
-          // clear form fields
-          this.newTaskName = '';
-          this.newTaskDescr = '';
-          this.newTaskDue = '';
-          this.createFormError = false; // clear any error message
-        } else {
-          this.createFormError = true;
-          this.createFormErrorMsg = 'Please complete the form to create a task.';
-          console.log("createTask() error: expected new task values not present ")
-        }
+            axios.post('/add' , {
+                  name: this.newTaskName,
+                  description: this.newTaskDescr,
+                  due: this.newTaskDue
+                  })
+              .then( response =>  this.myTasks = response.data )
+              .catch(function (error) {
+                if (error.response) {
+                  // The request was made and the server responded with a status code
+                  // that falls out of the range of 2xx
+                  console.log(error.response.data);
+                  console.log(error.response.status);
+                  console.log(error.response.headers);
+                } else if (error.request) {
+                  // The request was made but no response was received
+                  // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                  // http.ClientRequest in node.js
+                  console.log(error.request);
+                } else {
+                  // Something happened in setting up the request that triggered an Error
+                  console.log('Error', error.message);
+                }
+                console.log(error.config);
+              });
+
+            // clear form fields
+            this.newTaskName = '';
+            this.newTaskDescr = '';
+            this.newTaskDue = '';
+            this.createFormError = false; // clear any error message
+          }
       },
   },
   computed: {
@@ -375,5 +397,9 @@ export default {
 
 .filter-button {
   width: 15%;
+}
+
+.row {
+  padding-left: 5px;
 }
 </style>
