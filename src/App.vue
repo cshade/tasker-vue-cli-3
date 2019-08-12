@@ -31,7 +31,7 @@ export default {
 
 h1, h2 {
   font-weight: normal;
-  margin: 5px 20px;
+  margin: 20px 20px;
 }
 
 h1 {
@@ -52,10 +52,6 @@ li {
 
 a {
   color: #42b983;
-}
-
-button {
-  margin: 5px 5px;
 }
 </style>
 

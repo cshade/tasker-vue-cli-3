@@ -89,29 +89,43 @@
 
 <hr>
   <h2>Create a New Task</h2>
-  <div class="input-group input-group-sm">
-    <ul>
-      <li class="error" v-show="createFormError">{{ createFormErrorMsg }}</li>
-<div class="row">
-  <div class="col">
-      <li>Task: <input id="new-task-name" type="text" class="form-control" v-model.trim="newTaskName"></li>
-  </div>
-  <div class="col">
-      <li>Due: <input id="new-task-due" class="form-control" type=date v-model.trim="newTaskDue"></li>
-  </div>
-</div>
-<div class="row">
-  <div class="col">
-      <li>More info: <input id="new-task-descr" class="form-control" type="text" v-model.trim="newTaskDescr"></li>
-  </div>
-</div>
+  <div class="container">
+
+    <div class="row">
+      <div class="col">
+        <div class="error" v-show="createFormError">
+          {{ createFormErrorMsg }}
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-6">
+          Task: <input id="new-task-name" type="text" class="form-control" v-model.trim="newTaskName">
+      </div>
+
+      <div class="col-sm-auto">
+          Due: <input id="new-task-due" class="form-control" type=date v-model.trim="newTaskDue">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+          More info: <input id="new-task-descr" class="form-control" type="text" v-model.trim="newTaskDescr">
+      </div>
+    </div>
       
-      <li><create-task-button
-        v-on:custom="createTask"
-        class="btn btn-primary col-sm-4"
-      >Create
-      </create-task-button></li>
-    </ul>
+    <div class="row">
+      <div class="col">
+        <create-task-button
+          v-on:custom="createTask"
+          class="btn btn-primary col-sm-3"
+        >Create
+        </create-task-button>
+      </div>
+    </div>
+
+  </div>
   </div>
 </div>
 </template>
@@ -409,9 +423,27 @@ export default {
 </script>
 
 <style>
-.overdue, .error {
+.container {
+  text-align: left;
+}
+
+button {
+  margin: 5px 5px;
+}
+
+input {
+  margin: 5px 0px;
+}
+
+.overdue {
   color: #dc3545;
   font-weight: 700;
+}
+
+.error {
+  color: #dc3545;
+  font-weight: 700;  
+  margin: 5px 0px;
 }
 
 .due-today {
@@ -426,9 +458,5 @@ export default {
 
 .filter-button {
   width: 15%;
-}
-
-.row {
-  padding-left: 5px;
 }
 </style>
