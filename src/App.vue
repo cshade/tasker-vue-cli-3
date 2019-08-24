@@ -1,37 +1,41 @@
 <template>
   <div id="app">
-    <img alt="Tasker logo" src="./assets/logo.png">
+    <router-link to="/">
+      <img id="logo" alt="Tasker logo" src="./assets/logo.png" />
+    </router-link>
 
-    <task-console-display/>
+    <div id="nav">
+      <b-navbar type="light" variant="light">
+        <b-navbar-nav class="ml-auto">
+          <!-- Bootstrap Vue's b-nav-item in place of router-link -->
+          <b-nav-item to="/tasks">Tasks</b-nav-item>
+          <b-nav-item to="/reminders">Reminders</b-nav-item>
+        </b-navbar-nav>
+      </b-navbar>
+    </div>
 
+    <router-view />
   </div>
 </template>
 
-<script>
-import TaskConsoleDisplay from './components/TaskConsoleDisplay.vue'
-
-export default {
-  name: 'app',
-  components: { 
-      'task-console-display': TaskConsoleDisplay
-  },
-}
-
-</script>
-
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 20px;
 }
 
-h1, h2 {
+#logo {
+  float: left;
+  margin: 0px 50px 0px 30px;
+}
+
+h1,
+h2 {
   font-weight: normal;
-  margin: 20px 20px;
+  margin: 40px 0px 10px 0px !important;
 }
 
 h1 {
@@ -43,7 +47,6 @@ ul {
   padding: 0;
   text-align: left;
   padding-left: 20px;
-
 }
 
 li {
@@ -54,4 +57,3 @@ a {
   color: #42b983;
 }
 </style>
-
