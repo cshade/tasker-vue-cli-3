@@ -1,6 +1,6 @@
 <template>
   <div class="task-list">
-    <h2 id="due-tasks-heading">Due Tasks</h2>
+    <h2 id="due-tasks-heading">Tasks</h2>
 
     <ul>
       <li v-show="getTasksForDisplay.length == 0">
@@ -40,56 +40,56 @@
       </li>
 
       <li>
-        <sort-tasks-button
+        <sort-list-button
           v-show="getTasksForDisplay.length > 0"
           v-on:custom="toggleSort"
           class="btn btn-primary btn-sm"
           >toggle sort
-        </sort-tasks-button>
+        </sort-list-button>
       </li>
     </ul>
 
     <span class="filter-label">Filter:</span>
 
-    <filter-tasks-button
+    <filter-list-button
       v-on:custom="filterKey = 'all'"
       v-bind:class="{
         'btn btn-outline-primary col-sm-2': filterKey == 'all',
         'btn btn-primary col-sm-2': filterKey != 'all'
       }"
       >All Due
-    </filter-tasks-button>
+    </filter-list-button>
 
-    <filter-tasks-button
+    <filter-list-button
       v-on:custom="filterKey = 'overdue'"
       v-bind:class="{
         'btn btn-outline-danger col-sm-2': filterKey == 'overdue',
         'btn btn-danger col-sm-2': filterKey != 'overdue'
       }"
       >Overdue
-    </filter-tasks-button>
+    </filter-list-button>
 
-    <filter-tasks-button
+    <filter-list-button
       v-on:custom="filterKey = 'today'"
       v-bind:class="{
         'btn btn-outline-warning col-sm-2': filterKey == 'today',
         'btn btn-warning col-sm-2': filterKey != 'today'
       }"
       >Due Today
-    </filter-tasks-button>
+    </filter-list-button>
 
-    <filter-tasks-button
+    <filter-list-button
       v-on:custom="filterKey = 'tomorrow'"
       v-bind:class="{
         'btn btn-outline-secondary col-sm-2': filterKey == 'tomorrow',
         'btn btn-secondary col-sm-2': filterKey != 'tomorrow'
       }"
       >Due Tomorrow
-    </filter-tasks-button>
+    </filter-list-button>
 
     <hr />
 
-    <h2>All Done</h2>
+    <h2>Done Tasks</h2>
     <ul>
       <li v-show="getDoneTasksForDisplay.length == 0">
         There are no tasks marked as done.
@@ -111,7 +111,7 @@
     </ul>
 
     <hr />
-    <h2>Create a New Task</h2>
+    <h2>Create a Task</h2>
     <div class="container">
       <div class="row">
         <div class="col">
@@ -156,10 +156,8 @@
       </div>
 
       <div class="row">
-        <div class="col">
-          <create-task-button
-            v-on:custom="createTask"
-            class="btn btn-primary col-sm-3"
+        <div class="col-sm-3">
+          <create-task-button v-on:custom="createTask" class="btn btn-primary"
             >Create
           </create-task-button>
         </div>
@@ -174,14 +172,9 @@ import axios from "axios";
 import ToggleDoneButton from "./ToggleDoneButton";
 import ToggleShowDetailButton from "./ToggleShowDetailButton";
 import TaskDetailsDisplay from "./TaskDetailsDisplay";
-import FilterTasksButton from "./FilterTasksButton";
+import FilterListButton from "./FilterListButton";
 import CreateTaskButton from "./CreateTaskButton";
-import SortTasksButton from "./SortTasksButton";
-import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap-vue/dist/bootstrap-vue.css";
-
-// URI of the Task API
-axios.defaults.baseURL = "http://localhost:8082/api/task";
+import SortListButton from "./SortListButton";
 
 export default {
   name: "TaskList",
@@ -211,13 +204,17 @@ export default {
     "toggle-done-button": ToggleDoneButton,
     "toggle-show-detail-button": ToggleShowDetailButton,
     "task-details-display": TaskDetailsDisplay,
-    "filter-tasks-button": FilterTasksButton,
+    "filter-list-button": FilterListButton,
     "create-task-button": CreateTaskButton,
-    "sort-tasks-button": SortTasksButton
+    "sort-list-button": SortListButton
   },
   methods: {
     toggleSort() {
       this.sortDirection = !this.sortDirection;
+      this.SortReminders();
+    },
+
+    SortReminders() {
       if (this.myTasks) {
         this.myTasks.sort((a, b) => {
           if (moment(a.due).isBefore(moment(b.due)))
@@ -240,37 +237,35 @@ export default {
     getOverdue(taskId = 0) {
       if (taskId != 0) {
         // find this task in the array
-        let taskToEvaluate = this.myTasks.filter(taskToEvaluate => {
-          return taskToEvaluate._id == taskId;
+        let taskToEvaluate = this.myTasks.filter(tempTask => {
+          return tempTask._id == taskId;
         })[0];
 
         return moment(taskToEvaluate.due, "YYYY-MM-DD").isBefore(
           moment(),
           "day"
         );
-      } else {
-        return false;
       }
+      return false;
     },
     // return due today state of a given task
     getDueToday(taskId = 0) {
       if (taskId != 0) {
         // find this task in the array
-        let taskToEvaluate = this.myTasks.filter(taskToEvaluate => {
-          return taskToEvaluate._id == taskId;
+        let taskToEvaluate = this.myTasks.filter(tempTask => {
+          return tempTask._id == taskId;
         })[0];
 
         return moment(taskToEvaluate.due, "YYYY-MM-DD").isSame(moment(), "day");
-      } else {
-        return false;
       }
+      return false;
     },
     // return due tomorrow state of a given task
     getDueTomorrow(taskId = 0) {
       if (taskId != 0) {
         // find this task in the array
-        let taskToEvaluate = this.myTasks.filter(taskToEvaluate => {
-          return taskToEvaluate._id == taskId;
+        let taskToEvaluate = this.myTasks.filter(tempTask => {
+          return tempTask._id == taskId;
         })[0];
         // create a tomorrow moment object for comparison
         let tempMoment = moment().add(1, "days");
@@ -278,27 +273,25 @@ export default {
           tempMoment,
           "day"
         );
-      } else {
-        return false;
       }
+      return false;
     },
     // friendly format for display of this task's date
     displayDate(taskId = 0) {
       if (taskId != 0) {
         // find this task in the array
-        let taskToEvaluate = this.myTasks.filter(taskToEvaluate => {
-          return taskToEvaluate._id == taskId;
+        let taskToEvaluate = this.myTasks.filter(tempTask => {
+          return tempTask._id == taskId;
         })[0];
         return moment(taskToEvaluate.due, "YYYY-MM-DD").isSame(moment(), "day")
           ? "Today"
           : moment(taskToEvaluate.due, "YYYY-MM-DD").format("dddd MMMM DD");
-      } else {
-        console.log("displayDate() error: invalid task id");
-        return "Date format error";
       }
+      console.log("displayDate() error: invalid task id");
+      return "Date format error";
     },
 
-    // toggles the "done" state of a given task, via the Task API
+    // toggles the "done" state of a given task, via the server
     toggleDone(taskId = 0) {
       if (taskId != 0) {
         // find the task in the array
@@ -314,7 +307,7 @@ export default {
           }
         };
         axios
-          .post("/update/" + taskId, taskToUpdate, config)
+          .post("/task/update/" + taskId, taskToUpdate, config)
           .then(response => (this.myTasks = response.data))
           .catch(error => {
             if (error.response) {
@@ -365,7 +358,7 @@ export default {
         console.log("deleteTask() error: invalid task id");
       }
     },
-    // create a new task in the system, via the Task API
+    // create a task in the system, via the server
     createTask() {
       // clear any pre-existing error condition
       this.createFormError = false;
@@ -387,7 +380,7 @@ export default {
         this.newTaskDue = moment(this.newTaskDue).format("YYYY-MM-DD");
 
         axios
-          .post("/add", {
+          .post("/task/add", {
             name: this.newTaskName,
             description: this.newTaskDescr,
             due: this.newTaskDue
@@ -429,20 +422,41 @@ export default {
             .filter(task =>
               moment(task.due, "YYYY-MM-DD").isBefore(moment(), "day")
             )
-            .filter(task => !task.done);
+            .filter(task => !task.done)
+            .sort((a, b) => {
+              if (moment(a.due).isBefore(moment(b.due)))
+                return this.sortDirection ? -1 : 1;
+              if (moment(a.due).isAfter(moment(b.due)))
+                return this.sortDirection ? 1 : -1;
+              return 0;
+            });
         } else if (this.filterKey == "today") {
           return this.myTasks
             .filter(task =>
               moment(task.due, "YYYY-MM-DD").isSame(moment(), "day")
             )
-            .filter(task => !task.done);
+            .filter(task => !task.done)
+            .sort((a, b) => {
+              if (moment(a.due).isBefore(moment(b.due)))
+                return this.sortDirection ? -1 : 1;
+              if (moment(a.due).isAfter(moment(b.due)))
+                return this.sortDirection ? 1 : -1;
+              return 0;
+            });
         } else if (this.filterKey == "tomorrow") {
           let tempMoment = moment().add(1, "days");
           return this.myTasks
             .filter(task =>
               moment(task.due, "YYYY-MM-DD").isSame(tempMoment, "day")
             )
-            .filter(task => !task.done);
+            .filter(task => !task.done)
+            .sort((a, b) => {
+              if (moment(a.due).isBefore(moment(b.due)))
+                return this.sortDirection ? -1 : 1;
+              if (moment(a.due).isAfter(moment(b.due)))
+                return this.sortDirection ? 1 : -1;
+              return 0;
+            });
         }
         return this.myTasks
           .filter(task => !task.done)
@@ -460,10 +474,10 @@ export default {
       return this.myTasks.filter(task => task.done);
     }
   },
-  // retrieve all the existing tasks via the Task API
+  // retrieve all the existing tasks from the server
   mounted: function() {
     axios
-      .get("/all")
+      .get("/task/all")
       .then(response => {
         console.log(
           "TaskConsoleDisplay.vue mounted with tasks: " +
@@ -472,9 +486,7 @@ export default {
         this.myTasks = response.data;
       })
       .catch(error => {
-        console.log(
-          "TaskConsoleDisplay.vue: error communicating with Task API"
-        );
+        console.log("TaskConsoleDisplay.vue: error communicating with server");
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
