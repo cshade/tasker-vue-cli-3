@@ -508,7 +508,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .container {
   text-align: left;
 }
@@ -526,18 +526,18 @@ input {
 }
 
 .overdue {
-  color: #dc3545;
+  color: var(--danger);
   font-weight: 700;
 }
 
 .error {
-  color: #dc3545;
+  color: var(--danger);
   font-weight: 700;
   margin: 5px 0px;
 }
 
 .due-today {
-  color: #ffc107;
+  color: var(--warning);
   font-weight: 700;
 }
 

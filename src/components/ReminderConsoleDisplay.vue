@@ -134,8 +134,6 @@
 <script>
 import moment from "moment";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap-vue/dist/bootstrap-vue.css";
 import SortListButton from "./SortListButton";
 import FilterListButton from "./FilterListButton";
 import CreateTaskButton from "./CreateTaskButton";
@@ -378,7 +376,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 #reminders-heading {
   margin-top: 135px !important;
 }
@@ -388,7 +386,7 @@ button {
 }
 
 .soon {
-  color: #28a745;
+  color: var(--success);
   font-weight: 700;
 }
 
@@ -405,7 +403,7 @@ button {
 }
 
 .error {
-  color: #dc3545;
+  color: var(--danger);
   font-weight: 700;
   margin: 5px 0px;
 }
