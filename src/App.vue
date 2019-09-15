@@ -10,6 +10,15 @@
           <!-- Bootstrap Vue's b-nav-item in place of router-link -->
           <b-nav-item to="/tasks">Tasks</b-nav-item>
           <b-nav-item to="/reminders">Reminders</b-nav-item>
+          <b-nav-item-dropdown
+            id="create-dropdown"
+            text="Create"
+            toggle-class="nav-link-custom"
+            right
+          >
+            <b-dropdown-item to="/create/task">Task</b-dropdown-item>
+            <b-dropdown-item to="/create/reminder">Reminder</b-dropdown-item>
+          </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-navbar>
     </div>
@@ -40,6 +49,10 @@ h2 {
 
 h1 {
   text-align: center;
+}
+
+#heading-top {
+  margin-top: 135px !important;
 }
 
 ul {

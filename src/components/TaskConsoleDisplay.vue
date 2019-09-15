@@ -1,6 +1,6 @@
 <template>
   <div class="task-list">
-    <h2 id="due-tasks-heading">Tasks</h2>
+    <h2 id="heading-top">Tasks</h2>
 
     <ul>
       <li v-show="getTasksForDisplay.length == 0">
@@ -109,60 +109,6 @@
         {{ task.name }}
       </li>
     </ul>
-
-    <hr />
-    <h2>Create a Task</h2>
-    <div class="container">
-      <div class="row">
-        <div class="col">
-          <div class="error" v-show="createFormError">
-            {{ createFormErrorMsg }}
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-6">
-          Task:
-          <input
-            id="new-task-name"
-            type="text"
-            class="form-control"
-            v-model.trim="newTaskName"
-          />
-        </div>
-
-        <div class="col-sm-auto">
-          Due:
-          <input
-            id="new-task-due"
-            class="form-control"
-            type="date"
-            v-model.trim="newTaskDue"
-          />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-12">
-          More info:
-          <input
-            id="new-task-descr"
-            class="form-control"
-            type="text"
-            v-model.trim="newTaskDescr"
-          />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-sm-3">
-          <create-task-button v-on:custom="createTask" class="btn btn-primary"
-            >Create
-          </create-task-button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -173,7 +119,6 @@ import ToggleDoneButton from "./ToggleDoneButton";
 import ToggleShowDetailButton from "./ToggleShowDetailButton";
 import TaskDetailsDisplay from "./TaskDetailsDisplay";
 import FilterListButton from "./FilterListButton";
-import CreateTaskButton from "./CreateTaskButton";
 import SortListButton from "./SortListButton";
 
 export default {
@@ -190,14 +135,7 @@ export default {
       // for the filter button action, triggers a filtered display
       filterKey: "all",
 
-      sortDirection: true, // asc is default here
-
-      // these are for Create Task action
-      newTaskName: "",
-      newTaskDescr: "",
-      newTaskDue: "",
-      createFormErrorMsg: "", // form error msg
-      createFormError: false // simple error msg display flag
+      sortDirection: true // asc is default here
     };
   },
   components: {
@@ -205,7 +143,6 @@ export default {
     "toggle-show-detail-button": ToggleShowDetailButton,
     "task-details-display": TaskDetailsDisplay,
     "filter-list-button": FilterListButton,
-    "create-task-button": CreateTaskButton,
     "sort-list-button": SortListButton
   },
   methods: {
@@ -267,7 +204,7 @@ export default {
         let taskToEvaluate = this.myTasks.filter(tempTask => {
           return tempTask._id == taskId;
         })[0];
-        // create a tomorrow moment object for comparison
+        // a tomorrow moment object for comparison
         let tempMoment = moment().add(1, "days");
         return moment(taskToEvaluate.due, "YYYY-MM-DD").isSame(
           tempMoment,
@@ -356,60 +293,6 @@ export default {
           });
       } else {
         console.log("deleteTask() error: invalid task id");
-      }
-    },
-    // create a task in the system, via the server
-    createTask() {
-      // clear any pre-existing error condition
-      this.createFormError = false;
-      this.createFormErrorMsg = "";
-
-      // confirm that we have data for a new task
-      if (!this.newTaskName || !this.newTaskDescr || !this.newTaskDue) {
-        this.createFormError = true;
-        this.createFormErrorMsg = "To create a task, please complete the form.";
-
-        // validate date
-      } else if (moment(this.newTaskDue).isBefore(moment(), "day")) {
-        this.createFormError = true;
-        this.createFormErrorMsg =
-          "To create this task, please choose either today or a future date.";
-      } else if (!this.createFormError) {
-        // just in case
-        // clean date format
-        this.newTaskDue = moment(this.newTaskDue).format("YYYY-MM-DD");
-
-        axios
-          .post("/task/add", {
-            name: this.newTaskName,
-            description: this.newTaskDescr,
-            due: this.newTaskDue
-          })
-          .then(response => (this.myTasks = response.data))
-          .catch(error => {
-            if (error.response) {
-              // The request was made and the server responded with a status code
-              // that falls out of the range of 2xx
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
-            } else if (error.request) {
-              // The request was made but no response was received
-              // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-              // http.ClientRequest in node.js
-              console.log(error.request);
-            } else {
-              // Something happened in setting up the request that triggered an Error
-              console.log("Error", error.message);
-            }
-            console.log(error.config);
-          });
-
-        // clear form fields
-        this.newTaskName = "";
-        this.newTaskDescr = "";
-        this.newTaskDue = "";
-        this.createFormError = false; // clear any error message
       }
     }
   },
@@ -513,10 +396,6 @@ export default {
   text-align: left;
 }
 
-#due-tasks-heading {
-  margin-top: 135px !important;
-}
-
 button {
   margin: 5px 5px;
 }
@@ -528,12 +407,6 @@ input {
 .overdue {
   color: var(--danger);
   font-weight: 700;
-}
-
-.error {
-  color: var(--danger);
-  font-weight: 700;
-  margin: 5px 0px;
 }
 
 .due-today {

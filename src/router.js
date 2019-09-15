@@ -24,6 +24,16 @@ export default new Router({
       path: "/tasks",
       name: "tasks",
       component: () => import("./components/TaskConsoleDisplay")
+    },
+    {
+      path: "/create/task",
+      name: "create-task",
+      component: () => import("./components/CreateTask")
+    },
+    {
+      path: "/create/reminder",
+      name: "create-reminder",
+      component: () => import("./components/CreateReminder")
     }
   ]
 });

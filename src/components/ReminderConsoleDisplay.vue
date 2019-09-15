@@ -1,6 +1,6 @@
 <template>
   <div class="reminder-console">
-    <h2 id="reminders-heading">Reminders</h2>
+    <h2 id="heading-top">Reminders</h2>
     <ul>
       <li v-show="getRemindersForDisplay.length == 0">
         There are no reminders to display.
@@ -84,50 +84,6 @@
         </div>
       </div>
     </div>
-
-    <hr />
-    <h2>Create a Reminder</h2>
-    <div class="container">
-      <div class="row justify-content-start align-items-center">
-        <div class="col-sm-auto">
-          <div class="error" v-show="createFormError">
-            {{ createFormErrorMsg }}
-          </div>
-        </div>
-      </div>
-
-      <div class="row justify-content-start align-items-center">
-        <div class="col-6 align-self-start">
-          Reminder:
-          <input
-            id="remind"
-            type="text"
-            class="form-control"
-            v-model.trim="newRemind"
-          />
-        </div>
-
-        <div class="col-sm-auto">
-          Remind When:
-          <input
-            id="remind-when"
-            class="form-control"
-            type="date"
-            v-model.trim="newRemindwhen"
-          />
-        </div>
-      </div>
-
-      <div class="row justify-content-start align-items-center">
-        <div class="col-sm-auto align-self-start">
-          <create-task-button
-            v-on:custom="createReminder"
-            class="btn btn-primary"
-            >Create
-          </create-task-button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -136,7 +92,6 @@ import moment from "moment";
 import axios from "axios";
 import SortListButton from "./SortListButton";
 import FilterListButton from "./FilterListButton";
-import CreateTaskButton from "./CreateTaskButton";
 
 export default {
   name: "ReminderList",
@@ -147,19 +102,12 @@ export default {
       myReminders: [],
 
       // for the filter button action, triggers a filtered display
-      filterKey: "all",
-
-      // these are for Create Reminder action
-      newRemind: "",
-      newRemindwhen: "",
-      createFormErrorMsg: "", // form error msg
-      createFormError: false // simple error msg display flag
+      filterKey: "all"
     };
   },
   components: {
     "sort-list-button": SortListButton,
-    "filter-list-button": FilterListButton,
-    "create-task-button": CreateTaskButton
+    "filter-list-button": FilterListButton
   },
   methods: {
     isSoon(reminderId = 0) {
@@ -218,59 +166,6 @@ export default {
             return this.sortDirection ? 1 : -1;
           return 0;
         });
-      }
-    },
-    // create a reminder in the system, via the server
-    createReminder() {
-      // clear any pre-existing error condition
-      this.createFormError = false;
-      this.createFormErrorMsg = "";
-
-      // confirm that we have data for a new task
-      if (!this.newRemind || !this.newRemindwhen) {
-        this.createFormError = true;
-        this.createFormErrorMsg =
-          "To create a reminder, please complete the form.";
-
-        // validate date
-      } else if (moment(this.newRemindwhen).isBefore(moment(), "day")) {
-        this.createFormError = true;
-        this.createFormErrorMsg =
-          "To create this reminder, please choose either today or a future date.";
-      } else if (!this.createFormError) {
-        // just in case
-        // clean date format
-        this.newTaskDue = moment(this.newTaskDue).format("YYYY-MM-DD");
-
-        axios
-          .post("/reminder/add", {
-            remind: this.newRemind,
-            remindwhen: this.newRemindwhen
-          })
-          .then(response => (this.myReminders = response.data))
-          .catch(error => {
-            if (error.response) {
-              // The request was made and the server responded with a status code
-              // that falls out of the range of 2xx
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
-            } else if (error.request) {
-              // The request was made but no response was received
-              // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-              // http.ClientRequest in node.js
-              console.log(error.request);
-            } else {
-              // Something happened in setting up the request that triggered an Error
-              console.log("Error", error.message);
-            }
-            console.log(error.config);
-          });
-
-        // clear form fields
-        this.newRemind = "";
-        this.newRemindwhen = "";
-        this.createFormError = false; // clear any error message
       }
     },
     deleteReminder(reminderId) {
@@ -377,10 +272,6 @@ export default {
 </script>
 
 <style lang="scss">
-#reminders-heading {
-  margin-top: 135px !important;
-}
-
 button {
   margin: 5px 5px;
 }
@@ -400,11 +291,5 @@ button {
 
 .filter-button {
   width: 15%;
-}
-
-.error {
-  color: var(--danger);
-  font-weight: 700;
-  margin: 5px 0px;
 }
 </style>
