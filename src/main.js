@@ -3,6 +3,7 @@ import "mutationobserver-shim";
 import Vue from "vue";
 import App from "./App.vue";
 
+import "./scss/tasker.scss";
 import BootstrapVue from "bootstrap-vue";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";

@@ -1,15 +1,13 @@
 <template>
-		<button
-			v-on:click="$emit('custom')">
-			<slot></slot>
-		</button>
+	<b-button variant="primary" v-on:click="$emit('custom')">
+		<slot></slot>
+	</b-button>
 </template>
 
 <script>
 export default {
-	name: 'CreateTaskButton'
-}
+	name: "CreateTaskButton"
+};
 </script>
 
-<style>
-</style>
+<style></style>

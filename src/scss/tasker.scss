@@ -1,5 +1,16 @@
-// Required
-@import "../../node_modules/bootstrap/scss/functions";
-@import "../../node_modules/bootstrap/scss/variables";
-@import "../../node_modules/bootstrap/scss/mixins";
 
+$theme-colors: (
+    "primary":    #07689F,
+    "secondary":  #C9D6DF,
+    "success":    #11D3BC,
+    "info":       #A2D5F2,
+    "warning":    #FF7E67,
+    "danger":     #F67280,
+    "light":      #FAFAFA,
+    "dark":       #4E4E4E
+ 
+);
+
+
+// Bootstrap and its default variables
+@import "node_modules/bootstrap/scss/bootstrap";
