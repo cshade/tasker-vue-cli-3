@@ -4,6 +4,8 @@ Tasker is a product management suite under construction for [Cagibi](https://cag
 
 > Together with its separate Task API project, this is a demo of a containerized Node.js, Vue.js, MongoDB, RESTful API microservices application.
 
+![TaskerScreenshot](docs/Tasks_Console.png)
+
 ## Built With
 
 -   [Vue CLI 3](https://cli.vuejs.org/), [Vue Router](https://router.vuejs.org/)

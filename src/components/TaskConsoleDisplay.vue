@@ -550,17 +550,13 @@ export default {
     },
     getAllLabels() {
       let allLabels = new Array();
-      let tmpLabel = "";
-      if (this.myTasks) {
-        for (let i = 0; i < this.myTasks.length; i++) {
-          for (let j = 0; j < this.myTasks[i].labels.length; j++) {
-            tmpLabel = this.myTasks[i].labels[j];
-            if (!allLabels.includes(tmpLabel)) {
-              allLabels.push(tmpLabel);
-            }
+      this.myTasks.forEach(task => {
+        task.labels.forEach(label => {
+          if (!allLabels.includes(label)) {
+            allLabels.push(label);
           }
-        }
-      }
+        });
+      });
       allLabels.sort();
       return allLabels;
     }

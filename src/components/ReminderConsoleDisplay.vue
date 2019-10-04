@@ -446,17 +446,13 @@ export default {
 
     getAllLabels() {
       let allLabels = new Array();
-      let tmpLabel = "";
-      if (this.myReminders) {
-        for (let i = 0; i < this.myReminders.length; i++) {
-          for (let j = 0; j < this.myReminders[i].labels.length; j++) {
-            tmpLabel = this.myReminders[i].labels[j];
-            if (!allLabels.includes(tmpLabel)) {
-              allLabels.push(tmpLabel);
-            }
+      this.myReminders.forEach(reminder => {
+        reminder.labels.forEach(label => {
+          if (!allLabels.includes(label)) {
+            allLabels.push(label);
           }
-        }
-      }
+        });
+      });
       allLabels.sort();
       return allLabels;
     }
