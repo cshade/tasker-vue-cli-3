@@ -464,7 +464,7 @@ export default {
       .then(response => {
         console.log(
           "ReminderConsoleDisplay.vue mounted with reminders: " +
-            JSON.stringify(response.data)
+            JSON.stringify(response.data, null, 4)
         );
         this.myReminders = response.data;
       })

@@ -568,7 +568,7 @@ export default {
       .then(response => {
         console.log(
           "TaskConsoleDisplay.vue mounted with tasks: " +
-            JSON.stringify(response.data)
+            JSON.stringify(response.data, null, 4)
         );
         this.myTasks = response.data;
       })
