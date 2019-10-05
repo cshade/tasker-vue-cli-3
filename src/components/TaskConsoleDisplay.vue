@@ -452,7 +452,7 @@ export default {
     deleteTask(taskId) {
       if (taskId != 0) {
         axios
-          .delete("/delete/" + taskId)
+          .delete("/task/delete/" + taskId)
           .then(response => (this.myTasks = response.data))
           .catch(error => {
             if (error.response) {

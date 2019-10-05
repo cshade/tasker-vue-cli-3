@@ -109,7 +109,8 @@ export default {
                         axios.post("/task/add", {
                               name: this.newTaskName,
                               description: this.newTaskDescr,
-                              due: this.newTaskDue
+                              due: this.newTaskDue,
+                              labels: ["new"]
                         })
                               .then(response => (this.myTasks = response.data))
                               .catch(error => {

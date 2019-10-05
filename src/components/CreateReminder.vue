@@ -89,7 +89,8 @@ export default {
 				axios
 					.post("/reminder/add", {
 						remind: this.newRemind,
-						remindwhen: this.newRemindwhen
+						remindwhen: this.newRemindwhen,
+						labels: ["new"]
 					})
 					.then(response => (this.myReminders = response.data))
 					.catch(error => {
